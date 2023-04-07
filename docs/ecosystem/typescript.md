@@ -1,34 +1,63 @@
+Bun treats TypeScript as a first-class citizen. 
+
+## Running `.ts` files
+
 Bun can directly execute `.ts` and `.tsx` files just like vanilla JavaScript, with no extra configuration. If you import a `.ts` or `.tsx` file (or an `npm` module that exports these files), Bun internally transpiles it into JavaScript then executes the file.
 
 {% callout %}
 **Note** — Similar to other build tools, Bun does not typecheck the files. Use [`tsc --noEmit`](https://www.typescriptlang.org/docs/handbook/compiler-options.html) (the official TypeScript CLI) if you're looking to catch static type errors.
 {% /callout %}
 
-## Type definitions
+## Configuring `tsconfig.json` 
 
-To install TypeScript definitions for Bun's built-in APIs, first install `bun-types`.
+
+
+Bun supports a number of features that TypeScript doesn't support by default, such as extensioned imports and top-level await. It also implements the `Bun` global . To enable these features, your `tsconfig.json` must be configured properly. 
+
+{% callout %}
+If you initialized your project with  `bun init`, everything is already configured properly.
+{% /callout %}
+
+To get started, install the `bun-types` package. If you initialized your project with  `bun init`, everything is already configured properly.
 
 ```sh
 $ bun add -d bun-types # dev dependency
 ```
 
-Then include `"bun-types"` in the `compilerOptions.types` in your `tsconfig.json`:
+If you're using a canary build of Bun, use the `canary` tag. The canary package is updated on every commit to the `main` branch.
+
+```sh
+# if you're using a canary build of Bun
+$ bun add -d bun-types@canary 
+```
+
+### Quick setup
+
+{% callout %}
+
+**Note** —  Requires TypeScript 5.0+.
+
+{% /callout %}
+
+Add the following to your `tsconfig.json`. 
 
 ```json-diff
   {
-    "compilerOptions": {
-+     "types": ["bun-types"]
-    }
++   "extends": ["bun-types"]
+    // other options...
   }
 ```
 
-## Compiler options
+{% callout %}
+**Note** — The `"extends"` field in your `tsconfig.json` can accept an array of values. If you're already using `"extends"`, just add `"bun-types"` to the array.
+{% /callout %}
 
-Bun's runtime implements [modern ECMAScript features](https://github.com/sudheerj/ECMAScript-features), like bigint literals, nullish coalescing, dynamic imports, `import.meta`, `globalThis`, ES modules, top-level await, and more. To use these features without seeing TypeScript errors in your IDE, your `tsconfig.json` needs to be properly configured.
+That's it! You should be able to use Bun's full feature set without seeing any TypeScript compiler errors.
+
+### Manual setup
+
 
 These are the recommended `compilerOptions` for a Bun project.
-
-> The config below sets `moduleResolution` to `bundler` which requires TypeScript option is set to `"bundler"` to support [path mapping](#path-mapping).
 
 ```jsonc
 {
@@ -38,27 +67,36 @@ These are the recommended `compilerOptions` for a Bun project.
     "module": "esnext",
     "target": "esnext",
     
-    // requires typescript 5.x+
-    // use "nodenext" for earlier versions
+    // if TS 5.x+
     "moduleResolution": "bundler",
+    // if TS 4.x or earlier
+    "moduleResolution": "nodenext",
 
-    // support JSX, CommonJS
-    "jsx": "react-jsx", // support JSX (value doesn't matter)
+    // support JSX, CommonJS, ES imports
+    "jsx": "react-jsx", // support JSX
     "allowJs": true, // allow importing `.js` from `.ts`
     "esModuleInterop": true, // allow default imports for CommonJS modules
+    "allowImportingTsExtensions": true,
 
     // best practices
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-
+    
     // add Bun type definitions
     "types": ["bun-types"]
   }
 }
 ```
 
-If you use `bun init`, an appropriate `tsconfig.json` is automatically generated for you.
+You'll also need to set `"type": "module"` in your `package.json` to enable ES modules.
+
+```json-diff
+  {
++   "type": "module"
+  }
+```
+
 
 ## Path mapping
 
