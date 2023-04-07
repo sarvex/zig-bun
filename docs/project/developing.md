@@ -110,7 +110,7 @@ $ zigup 0.11.0-dev.1783+436e99d13
 
 ### Building
 
-To install and build dependencies:
+First install and build dependencies:
 
 ```bash
 # without --depth=1 this will take 20+ minutes on 1gbps internet
@@ -120,11 +120,17 @@ $ bun install
 $ make vendor identifier-cache
 ```
 
-To compile the C++ bindings:
+Then compile the C++ bindings:
 
 ```bash
 # without -j this will take 30+ minutes
 $ make bindings -j12
+```
+
+Then build Bun itself:
+
+```bash
+$ make dev
 ```
 
 <!-- If you're building on a macOS device, you'll need to have a valid Developer Certificate, or else the code signing step will fail. To check if you have one, open the `Keychain Access` app, go to the `login` profile and search for `Apple Development`. You should have at least one certificate with a name like `Apple Development: user@example.com (WDYABC123)`. If you don't have one, follow [this guide](https://ioscodesigning.com/generating-code-signing-files/#generate-a-code-signing-certificate-using-xcode) to get one. -->
