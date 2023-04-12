@@ -180,6 +180,7 @@ pub const Arguments = struct {
         clap.parseParam("--prefer-offline                  Skip staleness checks for packages in bun's JavaScript runtime and resolve from disk") catch unreachable,
         clap.parseParam("--prefer-latest                   Use the latest matching versions of packages in bun's JavaScript runtime, always checking npm") catch unreachable,
         clap.parseParam("--silent                          Don't repeat the command for bun run") catch unreachable,
+        clap.parseParam("--inspect-brk                     Start a debugger") catch unreachable,
         clap.parseParam("<POS>...                          ") catch unreachable,
     };
 
@@ -616,6 +617,7 @@ pub const Arguments = struct {
         // const ResolveMatcher = strings.ExactSizeMatcher(8);
 
         opts.resolve = Api.ResolveMode.lazy;
+        ctx.debug.inspect_break = args.flag("--inspect-brk");
 
         switch (comptime cmd) {
             .BuildCommand => {
@@ -866,6 +868,7 @@ pub const Command = struct {
         offline_mode_setting: ?Bunfig.OfflineMode = null,
         run_in_bun: bool = false,
         loaded_bunfig: bool = false,
+        inspect_break: bool = false,
 
         // technical debt
         macros: ?MacroMap = null,

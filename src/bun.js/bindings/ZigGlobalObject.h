@@ -25,6 +25,7 @@ class EventLoopTask;
 #include "JavaScriptCore/JSGlobalObject.h"
 #include "JavaScriptCore/JSTypeInfo.h"
 #include "JavaScriptCore/Structure.h"
+
 #include "WebCoreJSBuiltinInternals.h"
 #include "JSEnvironmentVariableMap.h"
 

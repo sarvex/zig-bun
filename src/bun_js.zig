@@ -58,7 +58,15 @@ pub const Run = struct {
         }
 
         run = .{
-            .vm = try VirtualMachine.init(arena.allocator(), ctx.args, null, ctx.log, null),
+            .vm = try VirtualMachine.init(
+                arena.allocator(),
+                ctx.args,
+                null,
+                ctx.log,
+                null,
+                // TODO: port
+                if (ctx.debug.inspect_break) .breakpoint else .none,
+            ),
             .file = file,
             .arena = arena,
             .ctx = ctx,

@@ -400,7 +400,14 @@ pub const TestCommand = struct {
 
         js_ast.Expr.Data.Store.create(default_allocator);
         js_ast.Stmt.Data.Store.create(default_allocator);
-        var vm = try JSC.VirtualMachine.init(ctx.allocator, ctx.args, null, ctx.log, env_loader);
+        var vm = try JSC.VirtualMachine.init(
+            ctx.allocator,
+            ctx.args,
+            null,
+            ctx.log,
+            env_loader,
+            if (ctx.debug.inspect_break) .breakpoint else .none,
+        );
         vm.argv = ctx.passthrough;
         vm.preload = ctx.preloads;
 

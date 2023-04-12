@@ -321,6 +321,12 @@ pub export fn Bun__handleRejectedPromise(global: *JSGlobalObject, promise: *JSC.
     jsc_vm.autoGarbageCollect();
 }
 
+pub export fn Bun__getMainPath(globalObject: *JSC.JSGlobalObject, out: *ZigString) void {
+    var jsc_vm = globalObject.bunVM();
+
+    out.* = ZigString.fromUTF8(jsc_vm.main);
+}
+
 pub export fn Bun__onDidAppendPlugin(jsc_vm: *VirtualMachine, globalObject: *JSGlobalObject) void {
     if (jsc_vm.plugin_runner != null) {
         return;
@@ -442,6 +448,8 @@ pub const VirtualMachine = struct {
     aggressive_garbage_collection: GCLevel = GCLevel.none,
 
     gc_controller: JSC.GarbageCollectionController = .{},
+
+    auto_inspect: bool = false,
 
     pub const OnUnhandledRejection = fn (*VirtualMachine, globalObject: *JSC.JSGlobalObject, JSC.JSValue) void;
 
@@ -730,6 +738,7 @@ pub const VirtualMachine = struct {
         existing_bundle: ?*NodeModuleBundle,
         _log: ?*logger.Log,
         env_loader: ?*DotEnv.Loader,
+        inspector: JSC.ZigGlobalObject.Inspect,
     ) !*VirtualMachine {
         var log: *logger.Log = undefined;
         if (_log) |__log| {
@@ -793,7 +802,7 @@ pub const VirtualMachine = struct {
         try vm.bundler.configureFramework(false);
 
         vm.bundler.macro_context = js_ast.Macro.MacroContext.init(&vm.bundler);
-
+        vm.auto_inspect = inspector != .none;
         if (_args.serve orelse false) {
             vm.bundler.linker.onImportCSS = Bun.onImportCSS;
         }
@@ -806,6 +815,7 @@ pub const VirtualMachine = struct {
             &global_classes,
             @intCast(i32, global_classes.len),
             vm.console,
+            inspector,
         );
         vm.regular_event_loop.global = vm.global;
         vm.regular_event_loop.virtual_machine = vm;
@@ -1555,6 +1565,11 @@ pub const VirtualMachine = struct {
         } else {
             promise = JSModuleLoader.loadAndEvaluateModule(this.global, &ZigString.init(this.main));
             this.pending_internal_promise = promise;
+        }
+
+        if (this.auto_inspect) {
+            this.auto_inspect = false;
+            _ = this.global.startRemoteInspector("0.0.0.0", 9229);
         }
 
         return promise;
@@ -3040,4 +3055,9 @@ pub fn NewHotReloader(comptime Ctx: type, comptime EventLoopType: type, comptime
             }
         }
     };
+}
+
+comptime {
+    if (!JSC.is_bindgen)
+        _ = Bun__getMainPath;
 }

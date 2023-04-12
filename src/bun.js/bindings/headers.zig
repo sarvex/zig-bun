@@ -189,7 +189,6 @@ pub extern fn JSC__JSGlobalObject__handleRejectedPromises(arg0: *bindings.JSGlob
 pub extern fn JSC__JSGlobalObject__putCachedObject(arg0: *bindings.JSGlobalObject, arg1: [*c]const ZigString, JSValue2: JSC__JSValue) JSC__JSValue;
 pub extern fn JSC__JSGlobalObject__queueMicrotaskJob(arg0: *bindings.JSGlobalObject, JSValue1: JSC__JSValue, JSValue2: JSC__JSValue, JSValue3: JSC__JSValue, JSValue4: JSC__JSValue) void;
 pub extern fn JSC__JSGlobalObject__reload(arg0: *bindings.JSGlobalObject) void;
-pub extern fn JSC__JSGlobalObject__startRemoteInspector(arg0: *bindings.JSGlobalObject, arg1: [*c]u8, arg2: u16) bool;
 pub extern fn JSC__JSGlobalObject__vm(arg0: *bindings.JSGlobalObject) *bindings.VM;
 pub extern fn JSC__JSValue___then(JSValue0: JSC__JSValue, arg1: *bindings.JSGlobalObject, JSValue2: JSC__JSValue, ArgFn3: ?*const fn (*bindings.JSGlobalObject, *bindings.CallFrame) callconv(.C) JSC__JSValue, ArgFn4: ?*const fn (*bindings.JSGlobalObject, *bindings.CallFrame) callconv(.C) JSC__JSValue) void;
 pub extern fn JSC__JSValue__asArrayBuffer_(JSValue0: JSC__JSValue, arg1: *bindings.JSGlobalObject, arg2: ?*Bun__ArrayBuffer) bool;
@@ -335,7 +334,7 @@ pub extern fn Reader__intptr__put(arg0: *bindings.JSGlobalObject, JSValue1: JSC_
 pub extern fn Crypto__getRandomValues__put(arg0: *bindings.JSGlobalObject, JSValue1: JSC__JSValue) void;
 pub extern fn Crypto__randomUUID__put(arg0: *bindings.JSGlobalObject, JSValue1: JSC__JSValue) void;
 pub extern fn Crypto__timingSafeEqual__put(arg0: *bindings.JSGlobalObject, JSValue1: JSC__JSValue) void;
-pub extern fn Zig__GlobalObject__create(arg0: [*c]JSClassRef, arg1: i32, arg2: ?*anyopaque) *bindings.JSGlobalObject;
+pub extern fn Zig__GlobalObject__create(arg0: [*c]JSClassRef, arg1: i32, arg2: ?*anyopaque, Inspect3: i32) *bindings.JSGlobalObject;
 pub extern fn Zig__GlobalObject__getModuleRegistryMap(arg0: *bindings.JSGlobalObject) ?*anyopaque;
 pub extern fn Zig__GlobalObject__resetModuleRegistryMap(arg0: *bindings.JSGlobalObject, arg1: ?*anyopaque) bool;
 pub extern fn Bun__Path__create(arg0: *bindings.JSGlobalObject, arg1: bool) JSC__JSValue;
